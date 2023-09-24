@@ -1,0 +1,21 @@
+[package]
+name = 'bitwolf/progrs'
+version = '0.1.0'
+description = 'Description for package progrs'
+readme = 'README.md'
+
+# See more keys and definitions at https://docs.wasmer.io/registry/manifest
+
+[dependencies]
+
+[[module]]
+name = 'progrs'
+source = 'target/wasm32-wasmer-wasi/release/progrs.wasm'
+abi = 'wasi'
+
+[module.interfaces]
+wasi = '0.1.0-unstable'
+
+[[command]]
+name = 'progrs'
+module = 'progrs'
