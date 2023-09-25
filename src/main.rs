@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::dates::dates::{gen_month};
+use crate::dates::dates::{gen_month, gen_year};
 
 mod dates;
 
@@ -76,7 +76,11 @@ fn main() {
         }
         Some(Commands::Year { timezone }) => {
             let tz = &timezone.as_ref();
-            println!("Progress for the year in {:?}", tz);
+            if tz.is_some() {
+                println!("Using tz of {:?}", tz.unwrap());
+            }
+            let percent = gen_year();
+            println!("Progress for the year {:?}%", percent);
         }
         _ => {
             println!("Can't decide? Heres the progress for the day.")

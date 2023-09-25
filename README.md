@@ -35,3 +35,4 @@ This will build a `wasm` binary in `target/wasm32-wasmer-wasi/debug/progrs.wasm`
 [day in month trait](https://github.com/chronotope/chrono/issues/29#issuecomment-1510506317)
 [clap is_terminal wasm breaks](https://github.com/clap-rs/clap/issues/4510#issuecomment-1327956501)
 [indicatif doesn't render on wasm32](https://github.com/console-rs/indicatif/issues/513#issuecomment-1567483572)
+[day in year](https://www.epochconverter.com/days/2023)
