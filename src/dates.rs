@@ -1,7 +1,7 @@
 #[allow(dead_code)]
 pub mod dates {
     use std::{time::Duration, thread};
-    use chrono::{Local, Datelike, DateTime};
+    use chrono::{Local, Datelike, DateTime, Timelike};
     use indicatif::ProgressBar;
 
     /// Returns a NaiveDate for the start of the supplied month.
@@ -22,7 +22,6 @@ pub mod dates {
         let dn = dt.date_naive();
         let diff = dn - start;
         (diff.num_days() + 1) as u32
-
     }
 
     fn mk_progress(min: u32, max: u32, curr: u32, dur: Option<u64>) {
@@ -41,6 +40,12 @@ pub mod dates {
         let percent = f64::from(curr) / f64::from(max) * 100 as f64;
         // println!("curr: {}, max: {}, percent: {} ({})", curr, max, percent.floor(), percent);
         percent.floor() as u32
+    }
+
+    pub fn gen_day() -> u32 {
+        let hour = Local::now().hour();
+        mk_progress(0, 24, hour, Some(10));
+        get_percent(hour, 24)
     }
 
     pub fn gen_month() -> u32 {

@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::dates::dates::{gen_month, gen_year};
+use crate::dates::dates::{gen_month, gen_year, gen_day};
 
 mod dates;
 
@@ -64,7 +64,11 @@ fn main() {
     match &cli.command {
         Some(Commands::Day { timezone }) => {
             let tz = &timezone.as_ref();
-            println!("Progress for the day in {:?}", tz);
+            let percent = gen_day();
+            if tz.is_some() {
+                println!("Using tz of {:?}", tz.unwrap());
+            }
+            println!("Progress for the day {:?}%", percent);
         }
         Some(Commands::Month { timezone }) => {
             let tz = &timezone.as_ref();
