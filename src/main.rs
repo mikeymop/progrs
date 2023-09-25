@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::dates::dates::start_of_year;
+use crate::dates::dates::{gen_month};
 
 mod dates;
 
@@ -43,6 +43,7 @@ enum Commands {
 
 fn main() {
     let cli = Cli::parse();
+    // println!("Command: {:?}", &cli.command);
 
     // You can check the value provided by positional arguments, or option arguments
     // if let Some(name) = cli.name.as_deref() {
@@ -52,13 +53,12 @@ fn main() {
     // You can see how many times a particular flag or argument occurred
     // Note, only flags can have multiple occurrences
     match cli.debug {
-        0 => println!("Debug mode is off"),
+        0 => {},
         1 => println!("Debug mode is kind of on"),
         2 => println!("Debug mode is on"),
         _ => println!("Don't be crazy"),
     }
 
-    println!("Command: {:?}", &cli.command);
 
     // Match out subcommands.
     match &cli.command {
@@ -68,11 +68,14 @@ fn main() {
         }
         Some(Commands::Month { timezone }) => {
             let tz = &timezone.as_ref();
-            println!("Progress for the month in {:?}", tz);
+            let percent = gen_month();
+            if tz.is_some() {
+                println!("Using tz of {:?}", tz.unwrap());
+            }
+            println!("Progress for the month {:?}%", percent);
         }
         Some(Commands::Year { timezone }) => {
             let tz = &timezone.as_ref();
-            start_of_year();
             println!("Progress for the year in {:?}", tz);
         }
         _ => {
