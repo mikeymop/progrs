@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 pub mod dates {
-    use std::{time::Duration, thread};
+    use std::{time::Duration, thread, cmp};
     use chrono::{Local, Datelike, DateTime, Timelike};
     use indicatif::ProgressBar;
 
@@ -9,7 +9,6 @@ pub mod dates {
         chrono::NaiveDate::from_ymd_opt(year, month, 1)
     }
 
-    #[allow(dead_code)]
     /// Returns a NaiveDate for the end of the supplied month.
     fn last_of_month(year: i32, month: u32) -> Option<chrono::NaiveDate> {
         chrono::NaiveDate::from_ymd_opt(year, month + 1, 1)
@@ -26,20 +25,40 @@ pub mod dates {
 
     fn mk_progress(min: u32, max: u32, curr: u32, dur: Option<u64>) {
         let pb = ProgressBar::new(u64::from(max));
+        let end = cmp::min(curr, max);
 
-        for _ in min..curr {
+        for _ in min..end {
+            // print!(" {} ", i);
             let wait = dur.unwrap_or(50);
             thread::sleep(Duration::from_millis(wait));
             pb.inc(1);
         }
 
-        pb.abandon_with_message("Progress for the year")
+        pb.abandon_with_message("Progress for the year");
     }
 
     fn get_percent(curr: u32, max: u32) -> u32 {
         let percent = f64::from(curr) / f64::from(max) * 100 as f64;
         // println!("curr: {}, max: {}, percent: {} ({})", curr, max, percent.floor(), percent);
-        percent.floor() as u32
+        cmp::min(percent.floor() as u32, 100 as u32) as u32
+    }
+
+    pub fn gen_workday() -> u32 {
+        let now = Local::now();
+        let end = chrono::NaiveDate::from_ymd_opt(now.year(), now.month(), now.day())
+            .unwrap()
+            .and_hms_opt(17, 0, 0)
+            .unwrap();
+        let max = 8;
+
+        mk_progress(0 as u32,
+            max,
+            cmp::min(now.hour(), max),
+            Some(10));
+
+        let percent = get_percent(now.hour(), end.hour());
+        // println!("Percent: {:?} Cmp: {:?}", percent, cmp::min(now.hour(), end.hour()));
+        percent
     }
 
     pub fn gen_day() -> u32 {

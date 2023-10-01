@@ -1,15 +1,12 @@
 use clap::{Parser, Subcommand};
 
-use crate::dates::dates::{gen_month, gen_year, gen_day};
+use crate::dates::dates::{gen_month, gen_year, gen_day, gen_workday};
 
 mod dates;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
-    /// Optional name to operate on
-    // name: Option<String>,
-
     /// Turn debugging information on
     /// counts the quantity of the `-d` flag eg: `-ddd`.
     #[arg(short, long, action = clap::ArgAction::Count)]
@@ -21,6 +18,14 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    /// Prints the progress for a std 9-5 workday
+    Work {
+        #[arg(short, long)]
+        /// Override the 5pm ending time for the workday.
+        end: Option<String>,
+        /// Override the default timezone.
+        timezone: Option<String>, 
+    },
     /// Prints the progress for the current day.
     Day {
         /// Override the default utc timezone.
@@ -62,6 +67,19 @@ fn main() {
 
     // Match out subcommands.
     match &cli.command {
+        Some(Commands::Work { end, timezone }) => {
+            let end = end.as_ref();
+            let tz = timezone.as_ref();
+
+            if end.is_some() {
+                println!("Working past 5? 🫠")
+            }
+            if tz.is_some() {
+                println!("Using tz of {:?}", tz.unwrap());
+            }
+            let percent = gen_workday();
+            println!("Progress for the workday {:?}%", percent);
+        }
         Some(Commands::Day { timezone }) => {
             let tz = &timezone.as_ref();
             let percent = gen_day();
